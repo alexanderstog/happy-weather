@@ -58,27 +58,98 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '$_weather',
-              style: TextStyle(fontSize: 40),
-            ),
-            SizedBox(height: 30),
-            Text(
-              'Your location: $_location',
-              style: TextStyle(fontSize: 20),
-            ),
-          ],
+  Widget _buildWeatherList(List<Map<String, dynamic>> weatherData) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: weatherData.length,
+            itemBuilder: (BuildContext context, int index) {
+              final data = weatherData[index];
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedDateIndex = index;
+                  });
+                },
+                child: Container(
+                  width: 150,
+                  margin: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: index == _selectedDateIndex
+                        ? Colors.blue[100]
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.grey[300],
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        DateFormat('EEEE').format(data['date']),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Image.network(
+                        'https://openweathermap.org/img/w/${data['icon']}.png',
+                        height: 50,
+                        width: 50,
+                      ),
+                      Text('${data['highTemp']}° / ${data['lowTemp']}°'),
+                      Text(data['description']),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
-      ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: 24,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) {
+              final data =
+              weatherData[_selectedDateIndex]['hourlyData'][index];
+              return Container(
+                width: 100,
+                margin: EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.grey[300],
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      DateFormat('h a').format(data['date']),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Image.network(
+                      'https://openweathermap.org/img/w/${data['icon']}.png',
+                      height: 50,
+                      width: 50,
+                    ),
+                    Text('${data['temp']}°'),
+                    Text(data['description']),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
+
 }
