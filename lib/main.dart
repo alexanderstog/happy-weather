@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'weather_api.dart';
+import 'package:happy_weather/models/weather_data.dart';
+import 'package:happy_weather/services/weather_api.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({required this.title});
 
   final String title;
 
@@ -29,35 +29,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _weather = 'unknown';
-  String _location = 'unknown';
-
-  void _getWeatherData() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      double latitude = position.latitude;
-      double longitude = position.longitude;
-      List<dynamic> responseData =
-      await WeatherApi.getWeatherData(latitude, longitude);
-      print(responseData);
-      print('what the fuck');
-      setState(() {
-        _weather = 'hello';
-        // responseData['weather'][0]['description'].toString().toUpperCase();
-        _location = 'world';
-        // responseData['name'].toString();
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  late String _location = 'unknown';
+  late List<WeatherData> _weatherList;
 
   @override
   void initState() {
     super.initState();
-    _getWeatherData();
+    getLocation();
   }
+
+  void getLocation() async {
+    location = Location();
+    await location.getCurrentLocation();
+
+    latitude = location.latitude;
+    longitude = location.longitude;
+
+    weatherData = await WeatherApi.getWeatherData(latitude, longitude);
+    setState(() {});
+  }
+  /*
+  void getLocation() async {
+    WeatherApi.getWeatherData().then((weatherList) {
+      setState(() {
+        _weatherList = weatherList;
+        _location = weatherList[0].cityName;
+      });
+    });
+  }
+  */
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,57 +71,20 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$_weather',
-              style: TextStyle(fontSize: 40),
-            ),
-            SizedBox(height: 30),
-            Text(
               'Location: $_location',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 30),
             Expanded(
-              child: FutureBuilder(
-                future: _futureWeather,
-                builder: (BuildContext context,
-                    AsyncSnapshot<WeatherData> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: snapshot.data.daily.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          var dailyData = snapshot.data.daily[index];
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  DateFormat('EEE, MMM d').format(
-                                      dailyData.date),
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  '${dailyData.maxTemp.toStringAsFixed(0)}°',
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  dailyData.description,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    }
-                  }
-                  return CircularProgressIndicator();
+              child: ListView.builder(
+                itemCount: _weatherList?.length ?? 0,
+                itemBuilder: (BuildContext context, int index) {
+                  var weatherData = _weatherList[index];
+                  return ListTile(
+                    title: Text('${weatherData.tempMax}'),
+                    // this is the correct version >> title: Text('${weatherData.date}, ${weatherData.tempMax}'),
+                    subtitle: Text(weatherData.description),
+                  );
                 },
               ),
             ),
@@ -129,7 +93,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 }
-
-
