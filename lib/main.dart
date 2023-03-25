@@ -35,30 +35,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getLocation();
-  }
-
-  void getLocation() async {
-    location = Location();
-    await location.getCurrentLocation();
-
-    latitude = location.latitude;
-    longitude = location.longitude;
-
-    weatherData = await WeatherApi.getWeatherData(latitude, longitude);
-    setState(() {});
-  }
-  /*
-  void getLocation() async {
-    WeatherApi.getWeatherData().then((weatherList) {
+    WeatherApi.getWeather().then((weatherList) {
       setState(() {
         _weatherList = weatherList;
         _location = weatherList[0].cityName;
       });
     });
   }
-  */
-
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   var weatherData = _weatherList[index];
                   return ListTile(
                     title: Text('${weatherData.tempMax}'),
-                    // this is the correct version >> title: Text('${weatherData.date}, ${weatherData.tempMax}'),
                     subtitle: Text(weatherData.description),
                   );
                 },
