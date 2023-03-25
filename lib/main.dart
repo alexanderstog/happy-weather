@@ -42,12 +42,12 @@ class _MyHomePageState extends State<MyHomePage> {
           desiredAccuracy: LocationAccuracy.high);
       double latitude = position.latitude;
       double longitude = position.longitude;
-      List<Map<String, dynamic>> weatherData  =
-      print(weatherData);
+      List<Map<String, dynamic>> weatherList  =
+      print(weatherList);
       setState(() {
         _weather =
-            weatherData['weather'][0]['description'].toString().toUpperCase();
-        _location = weatherData['name'].toString();
+            weatherList['weather'][0]['description'].toString().toUpperCase();
+        _location = weatherList['name'].toString();
       });
     } catch (e) {
       print(e.toString());
@@ -71,16 +71,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget _buildWeatherList(List<Map<String, dynamic>> weatherData) {
+  Widget build(BuildContext context) {
+    // TODO: Implement build method
+  }
+
+
+  @override
+  Widget _buildWeatherList(List<Map<String, dynamic>> weatherList) {
     return Column(
       children: [
         SizedBox(
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: weatherData.length,
+            itemCount: weatherList.length,
             itemBuilder: (BuildContext context, int index) {
-              final data = weatherData[index];
+              final data = weatherList[index];
               return GestureDetector(
                 onTap: () {
                   setState(() {
