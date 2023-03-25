@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'weather_api.dart';
+import 'package:intl/intl.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -32,14 +34,15 @@ class _MyHomePageState extends State<MyHomePage> {
   String _weather = 'unknown';
   String _location = 'unknown';
 
+
+
   void _getWeatherData() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       double latitude = position.latitude;
       double longitude = position.longitude;
-      Map<String, dynamic> responseData =
-      await WeatherApi.getWeatherData(latitude, longitude);
+      List<Map<String, dynamic>> responseData =
       print(responseData);
       setState(() {
         _weather =
@@ -55,6 +58,23 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _getWeatherData();
+  }
+
+  int _selectedDateIndex = 0;
+
+  int get selectedDateIndex => _selectedDateIndex;
+
+  set selectedDateIndex(int value) {
+    setState(() {
+      _selectedDateIndex = value;
+    });
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    // Your code here
   }
 
   @override
@@ -84,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.grey[300],
+                      color: Colors.grey[300]!,
                       width: 1,
                     ),
                   ),
