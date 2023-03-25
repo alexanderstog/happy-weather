@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
       double longitude = position.longitude;
       Map<String, dynamic> responseData =
       await WeatherApi.getWeatherData(latitude, longitude);
+      print(responseData);
       setState(() {
         _weather =
             responseData['weather'][0]['description'].toString().toUpperCase();
@@ -72,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 30),
             Text(
-              'Location: $_location',
+              'Your location: $_location',
               style: TextStyle(fontSize: 20),
             ),
           ],
