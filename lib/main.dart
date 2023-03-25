@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: Colors.grey[300],
+                    color: Colors.grey[300]!,
                     width: 1,
                   ),
                 ),
