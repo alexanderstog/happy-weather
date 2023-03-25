@@ -42,12 +42,12 @@ class _MyHomePageState extends State<MyHomePage> {
           desiredAccuracy: LocationAccuracy.high);
       double latitude = position.latitude;
       double longitude = position.longitude;
-      List<Map<String, dynamic>> responseData =
-      print(responseData);
+      List<Map<String, dynamic>> weatherData  =
+      print(weatherData);
       setState(() {
         _weather =
-            responseData['weather'][0]['description'].toString().toUpperCase();
-        _location = responseData['name'].toString();
+            weatherData['weather'][0]['description'].toString().toUpperCase();
+        _location = weatherData['name'].toString();
       });
     } catch (e) {
       print(e.toString());
@@ -68,13 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _selectedDateIndex = value;
     });
-  }
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    // Your code here
   }
 
   @override
