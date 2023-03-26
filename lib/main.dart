@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Happy Weather',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.yellow,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Happy Weather'),
     );
@@ -60,9 +61,45 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_weatherList == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'HappyB ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 2.0,
+                      color: Colors.orange,
+                      offset: Offset(1.0, 1.0),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '😊 Weather',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 2.0,
+                      color: Colors.orange,
+                      offset: Offset(1.0, 1.0),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.yellow[700],
         ),
-        body: Center(
+
+          body: Center(
           child: CircularProgressIndicator(),
         ),
       );
