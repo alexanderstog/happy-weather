@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:happy_weather/models/weather_data.dart';
+import 'package:happy_weather/services/location.dart';
 import 'package:happy_weather/services/weather_api.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({required this.title});
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -29,50 +30,82 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late String _location = 'unknown';
-  late List<WeatherData> _weatherList;
+  late List<WeatherData> _weatherList = [];
 
   @override
   void initState() {
     super.initState();
-    WeatherApi.getWeather().then((weatherList) {
-      setState(() {
-        _weatherList = weatherList;
-        _location = weatherList[0].cityName;
-      });
+    getLocationWeather();
+  }
+
+  void getLocationWeather() async {
+    // Get the current location of the user
+    Location location = Location();
+    await location.getCurrentLocation();
+
+
+    // Get the weather data for the next seven days in the user's location
+    List<WeatherData> weatherData = await WeatherApi.getWeatherData(
+      location.latitude!,
+      location.longitude!,
+    );
+
+    setState(() {
+      _weatherList = weatherData;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Location: $_location',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 30),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _weatherList?.length ?? 0,
-                itemBuilder: (BuildContext context, int index) {
-                  var weatherData = _weatherList[index];
-                  return ListTile(
-                    title: Text('${weatherData.tempMax}'),
-                    subtitle: Text(weatherData.description),
-                  );
-                },
-              ),
-            ),
-          ],
+    if (_weatherList == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-    );
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _weatherList.length,
+            itemBuilder: (BuildContext context, int index) {
+              var weatherData = _weatherList[index];
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        //'${weatherData.date}',
+                        'DATE',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '${weatherData.tempMax}°C',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '${weatherData.description}',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    }
   }
 }

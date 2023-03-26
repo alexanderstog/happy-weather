@@ -1,5 +1,6 @@
 class WeatherData {
-  final String cityName;
+  //final DateTime date;
+  //final String cityName;
   final String description;
   final double temperature;
   final double feelsLike;
@@ -9,7 +10,7 @@ class WeatherData {
   final int pressure;
 
   WeatherData({
-    required this.cityName,
+    //required this.cityName,
     required this.description,
     required this.temperature,
     required this.feelsLike,
@@ -17,13 +18,14 @@ class WeatherData {
     required this.tempMax,
     required this.humidity,
     required this.pressure,
+    //required this.date,
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     final weather = json['weather'][0];
     final main = json['main'];
     return WeatherData(
-      cityName: json['name'],
+     // cityName: json['name'],
       description: weather['description'],
       temperature: main['temp'].toDouble(),
       feelsLike: main['feels_like'].toDouble(),
@@ -31,6 +33,7 @@ class WeatherData {
       tempMax: main['temp_max'].toDouble(),
       humidity: main['humidity'],
       pressure: main['pressure'],
+      //date: main['dt_txt'],
     );
   }
 }
