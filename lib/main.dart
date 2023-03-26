@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:happy_weather/models/weather_data.dart';
 import 'package:happy_weather/services/location.dart';
 import 'package:happy_weather/services/weather_api.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MyApp());
@@ -44,7 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Location location = Location();
     await location.getCurrentLocation();
 
-
     // Get the weather data for the next seven days in the user's location
     List<WeatherData> weatherData = await WeatherApi.getWeatherData(
       location.latitude!,
@@ -79,34 +79,41 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              Text(
-                '😊 Weather',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 2.0,
-                      color: Colors.orange,
-                      offset: Offset(1.0, 1.0),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
           backgroundColor: Colors.yellow[700],
         ),
-
-          body: Center(
+        body: Center(
           child: CircularProgressIndicator(),
         ),
       );
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          centerTitle: true,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'HappyWeather',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 70.0,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              flexibleSpace: Container (
+                decoration: BoxDecoration (
+                  image: DecorationImage (
+                    image: AssetImage('assets/images/cloudsbg.jpg'),
+                    fit: BoxFit.cover,
+                  )
+                )
+              )
+            ],
+          ),
+          backgroundColor: Colors.yellow[700]!,
         ),
         body: Center(
           child: ListView.builder(
@@ -114,16 +121,19 @@ class _MyHomePageState extends State<MyHomePage> {
             itemCount: _weatherList.length,
             itemBuilder: (BuildContext context, int index) {
               var weatherData = _weatherList[index];
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+              return SizedBox(
+                width: 150,
+                child: Card(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        //'${weatherData.date}',
-                        'DATE',
-                        style: TextStyle(fontSize: 20),
+                        DateFormat('h a, d MMMM')
+                            .format(_weatherList[index].dateTime),
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(height: 10),
                       Text(

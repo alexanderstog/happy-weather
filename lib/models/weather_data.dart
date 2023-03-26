@@ -1,5 +1,5 @@
 class WeatherData {
-  //final DateTime date;
+  final DateTime dateTime;
   //final String cityName;
   final String description;
   final double temperature;
@@ -18,7 +18,7 @@ class WeatherData {
     required this.tempMax,
     required this.humidity,
     required this.pressure,
-    //required this.date,
+    required this.dateTime,
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
@@ -33,7 +33,7 @@ class WeatherData {
       tempMax: main['temp_max'].toDouble(),
       humidity: main['humidity'],
       pressure: main['pressure'],
-      //date: main['dt_txt'],
+      dateTime: DateTime.parse(json['dt_txt']),
     );
   }
 }
